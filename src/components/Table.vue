@@ -16,6 +16,7 @@
                         <input v-if="item=='string/email'" type="email" v-model="row[key]" />
                         <!-- not all the type of string/uid should be use to define supervisior, adjust later -->
                         <!-- the performance of this this also not good -->
+                        <!-- the unique key is not used now, to use it later, add it in javascript -->
                         <md-select v-if="item=='string/uid'"  v-model="row[key]" name="person_supervisior">
                                 <md-option v-for="(rowSele,rowIndexSele) in datasource" :key="rowIndexSele" :value="rowSele.person_name">
                                     {{rowSele.person_name}}
