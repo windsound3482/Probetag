@@ -11,6 +11,7 @@
                 <md-table-row v-for="(row,rowIndex) in datasource" :key="rowIndex">
                     <md-table-cell v-for="(item,key) in format" :key="key">
                         <input v-if="item=='string'" type="text" v-model="row[key]" />
+                        <input v-if="item=='string/language'" type="text" v-model="row[key]" />
                         <input v-if="item=='string/url'" type="url" v-model="row[key]" />
                         <input v-if="item=='string/phonenum'" type="tel" v-model="row[key]" />
                         <input v-if="item=='string/email'" type="email" v-model="row[key]" />
