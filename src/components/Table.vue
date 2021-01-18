@@ -1,30 +1,44 @@
 <template>
    <div>
-        <md-table>
+        <md-table class="md-scrollbar">
             <thead>
                 <md-table-row>
                     <md-table-head v-for="column in dataColums" :key="column">{{column}}</md-table-head>
                     <md-table-head>Action</md-table-head>
                 </md-table-row>
             </thead>
-            <tbody>
+            <tbody >
                 <md-table-row v-for="(row,rowIndex) in datasource" :key="rowIndex">
-                    <md-table-cell v-for="key in dataColums" :key="key">
-                        <input  v-model="row[key]"/>
-                    
+                    <md-table-cell v-for="(item,key) in format" :key="key">
+                        <input v-if="item=='string'" type="text" v-model="row[key]" />
+                        <input v-if="item=='string/url'" type="url" v-model="row[key]" />
+                        <input v-if="item=='string/phonenum'" type="tel" v-model="row[key]" />
+                        <input v-if="item=='string/email'" type="email" v-model="row[key]" />
+                        <!-- not all the type of string/uid should be use to define supervisior, adjust later -->
+                        <!-- the performance of this this also not good -->
+                        <md-select v-if="item=='string/uid'"  v-model="row[key]" name="person_supervisior">
+                                <md-option v-for="(rowSele,rowIndexSele) in datasource" :key="rowIndexSele" :value="rowSele.person_name">
+                                    {{rowSele.person_name}}
+                                </md-option>
+                        </md-select>
                     </md-table-cell>
                     <md-table-cell>
-                        <i class="material-icons" v-on:click="deleteRow(rowIndex)">clear</i>
+                        <md-button class="md-icon-button" v-on:click="deleteRow(rowIndex)">
+                            <md-icon >clear</md-icon>
+                        </md-button>
+                        
                     </md-table-cell>
                 </md-table-row>
             </tbody>
         </md-table>
-        <i class="material-icons" v-on:click="addRow">add_circle</i>
+        <md-button class="md-icon-button" v-on:click="addRow">
+            <md-icon >add_circle</md-icon>
+        </md-button>
+        
     </div>
 </template>
 
 <script>
-  
 
   export default {
     name: 'Table',
@@ -35,61 +49,34 @@
                 "id","name","email","gender","title"
             ],
             datasource:[
-                {
-                id: 1,
-                name: 'Shawna Dubbin',
-                email: 'sdubbin0@geocities.com',
-                gender: 'Male',
-                title: 'Assistant Media Planner'
-                },
-                {
-                id: 2,
-                name: 'Odette Demageard',
-                email: 'odemageard1@spotify.com',
-                gender: 'Female',
-                title: 'Account Coordinator'
-                },
-                {
-                id: 3,
-                name: 'Lonnie Izkovitz',
-                email: 'lizkovitz3@youtu.be',
-                gender: 'Female',
-                title: 'Operator'
-                },
-                {
-                id: 4,
-                name: 'Thatcher Stave',
-                email: 'tstave4@reference.com',
-                gender: 'Male',
-                title: 'Software Test Engineer III'
-                },
-                {
-                id: 5,
-                name: 'Clarinda Marieton',
-                email: 'cmarietonh@theatlantic.com',
-                gender: 'Female',
-                title: 'Paralegal'
-                }
-            ]
+            ],
+            format:null,
         }
     },
     methods: {
         
-
+        //add new row when needed
         addRow() {
-            this.datasource.push({})
-            //appData.updated()       
-
+            this.datasource.push({}) 
         },
+        //delete one row
         deleteRow(row) {
-            console.log(row);
             this.datasource.splice( parseInt(row), 1)
-            //appData.updated()
         },
     },
-    mounted() {
-        
+    async created() {
+  // GET request using fetch with async/await
+        const baseURL = 'https://api.staging.vdb.st/public/probetag'
+                
+        const response = await fetch(baseURL, 
+                {method: "POST", body: "{}"});
+        const data = await response.json();
+        this.format = Object.values(data)[0];
+        this.dataColums=Object.keys(this.format);
+        console.log(Object.values(this.format));
+
     },
+    
   }
 </script>
 
@@ -97,4 +84,13 @@
   .md-field {
     max-width: 300px;
   }
+  input{
+    border:none;
+    :invalid{
+        background-color:red;
+        color:white;
+    }
+  }
+
+ 
 </style>
