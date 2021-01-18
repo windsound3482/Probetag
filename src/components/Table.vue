@@ -88,10 +88,11 @@
   }
   input{
     border:none;
-    :invalid{
-        background-color:red;
-        color:white;
-    }
+    
+  }
+  input:invalid{
+    background-color:red;
+    color:white;
   }
 
  
